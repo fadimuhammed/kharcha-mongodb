@@ -15,29 +15,35 @@ function signToken(user) {
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
   try {
-    const { username, name, password } = req.body;
+    const { name, email, password } = req.body;
 
-    if (!username || !name || !password) {
-      return res.status(400).json({ error: 'username, name and password are required' });
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ msg: "User already exists" });
     }
 
-    const exists = await User.findOne({ username: username.toLowerCase().trim() });
-    if (exists) return res.status(409).json({ error: 'Username already taken' });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user  = await User.create({ username, name, password });
-    const token = signToken(user);
-
-    res.status(201).json({
-      token,
-      user: { id: user._id, username: user.username, name: user.name },
+    user = new User({
+      name,
+      email,
+      password: hashedPassword
     });
+
+    await user.save();
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    res.json({ token });
+
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      const msg = Object.values(err.errors).map(e => e.message).join('. ');
-      return res.status(400).json({ error: msg });
-    }
-    console.error('Register error:', err);
-    res.status(500).json({ error: 'Registration failed' });
+    console.error("Register error:", err);
+    res.status(500).json({ msg: "Server error" });
   }
 });
 
