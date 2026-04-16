@@ -1,16 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
+import { HashRouter } from "react-router-dom";
 
-import { AuthProvider } from "./context/AuthContext";
-import { HashRouter } from "react-router-dom"; // ✅ ADD THIS
+import App from "./App.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <HashRouter>   {/* ✅ ADD THIS */}
-      <AuthProvider>
+    <AuthProvider>
+      <HashRouter>
         <App />
-      </AuthProvider>
-    </HashRouter>
+      </HashRouter>
+    </AuthProvider>
   </React.StrictMode>
 );
