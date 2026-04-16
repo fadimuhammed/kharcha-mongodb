@@ -15,6 +15,9 @@ app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', creden
 app.use(express.json());
 
 // ── Routes ────────────────────────────────────────────────────────────────────
+app.get("/", (req, res) => {
+  res.send("Kharcha API is running 🚀");
+});
 app.use('/api/auth',     authRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/ai',       aiRoutes);
