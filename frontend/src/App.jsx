@@ -13,7 +13,7 @@ function Protected({ children }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/*" element={
@@ -29,6 +29,6 @@ export default function App() {
           </Protected>
         } />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
